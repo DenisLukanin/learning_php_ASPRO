@@ -7,47 +7,48 @@
 
 
 $path = "../gen.txt";
-// $start = microtime(true);
-// $result = [];
-// $s = file_get_contents($path);
-// $result["Denis"] = mb_substr_count($s, "Denis");
-// $result["Alena"] = mb_substr_count($s, "Alena");
-// $result["Liza"] = mb_substr_count($s, "Liza");
-// foreach($result as $name => $count){
-//     echo "Имя $name встречалось $count раз в файле get.txt <br>";
-// }
-
-// $end = microtime(true);
-// echo "скрипт выполнялся". round($end - $start, 4) ."секунд";
-
-
-$start = microtime(true);
-
+$result = [];
 $s = file_get_contents($path);
-$s = explode(" ", $s);
-array_pop($s);
-echo array_search('', $s);
-$result = array_count_values($s);
-// uasort($result, fn ($a,$b) => $b - $a);
+$result["Vova "] = mb_substr_count($s, "Vova ");
+echo "Вова встретился ".$result["Vova "]." раз ( для проверки )<br><br>";
+
+/**
+ * Undocumented function
+ *
+ * @param array $result
+ * @param array $arr
+ * @return array
+ */
+function arr_merge_custom(array $result, array $arr): array {
+    if (!$result) return array_merge($result, $arr);
+    foreach($result as $name => $value){
+        $result[$name] += $arr[$name];
+    }
+    return $result;
+};
+
+
+$start_time = microtime(true);
+
+$result = [];
+$megabyt = 1024*1024*10 ;
+
+for ($start = 0; $start <= filesize($path);$start += $megabyt ){
+    do{
+        $megabyt += 1;
+        $s = file_get_contents($path,false, null, $start, $megabyt);
+    } while($s[-1] != ' ');
+    $s = explode(" ", $s);
+    array_pop($s);
+    $result = arr_merge_custom($result, array_count_values($s));
+
+}
+uasort($result, fn ($a,$b) => $b - $a); //дает нагрузку нагрузку если что можно отключить
 foreach($result as $name => $count){
     echo "Имя $name встречалось $count раз в файле get.txt <br>";
 }
 
 $end = microtime(true);
-echo "скрипт выполнялся". round($end - $start, 4) ."секунд";
-
-
-
-// $resource = fopen("../gen.txt", "r");
-// fclose($resource);
-// echo $end - $start;
-
-
-
-
-// array_rand(arr, int); //рандомное значение из массива
-// clearstatcache(true, filename); очищает кеш состояния файла 
-// echo filesize($path); //узнать размер файла
-// mb_substr_count(); //сколько раз в подстрока встречается в строке
+echo "скрипт выполнялся". round($end - $start_time, 4) ."секунд";
 ?>
 <?php include '../include/footer.php'?>

@@ -23,36 +23,29 @@ ini_set('max_execution_time', '120');
 
 
 
-$names = ["Denis " => "", "Alena "=> "", "Liza "=> "", "Kostya "=> "", "Vova "=> ""];
+$names = ["Denis " => "", "Denis " => "", "Alena "=> "", "Liza "=> "", "Kostya "=> "", "Vova "=> "", "Kiril "=> "", "Sasha "=> "", 
+"Sveta "=> "", "Grisha "=> "", "Valera "=> "", "Dima "=> "", "Anna "=> "", "Kristina "=> "", "Vlad "=> "", "Nrina "=> "", "Olya "=> "",
+ "Mash "=> "", "Stas "=> "", "Pasha "=> "", "Ivan "=> "", "Natasha "=> "", "Marsel "=> "", "Ulyana "=> "", "Misha "=> "",
+  "Albert "=> "", "Yana "=> "", "Linda "=> "", "Petr "=> "", "Ruslan "=> "", "Roza "=> ""];
 $path = "../gen.txt";
-$size = 1024*1024*1;
-
-
-$names = array_merge($names,$names);
-var_dump($names);
+$size = 1024*1024*100;
 
 $start = microtime(true);
+$count = count($names);
 
 $resource = fopen($path, "w+");
 for ($i = 0; filesize($path) <= $size;$i++){
-    // echo filesize($path)."<br>";
-    fwrite($resource, implode('', array_rand($names, rand(2,5))));
+    fwrite($resource, implode('', array_rand($names, rand($count-10,$count))));
     if(!($i%1000)){
         clearstatcache(true, $path);
     }
     ;
     
 }
-
+fclose($resource);
 
 $end = microtime(true);
-echo "скрипт выполнялся". round($end - $start, 4) ."секунд";
-
-
-
-// pre_start();
-// print_r(array_rand($names, rand(2,5)));
-// print_r(array_rand($names, rand(2,5)));
-// pre_end();
+echo "размер файла ". round(filesize($path)/1024/1024, 2)." МБ<br>";
+echo "скрипт выполнялся ". round($end - $start, 4) ." секунд";
 ?>
 <?php include '../include/footer.php'?>

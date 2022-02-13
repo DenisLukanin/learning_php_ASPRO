@@ -82,20 +82,6 @@ show_messege('функция glob_dir_files() , использует функц�
 /**
  * Undocumented function
  *
- * @param array $arr
- * @return array
- */
-function last_dir(array $arr): array{
-    $result_mini = [];
-    foreach($arr as $item){
-        $item = explode("/",$item);
-        $result_mini[] = $item[count($item)-1];
-    }
-    return $result_mini;  
-}
-/**
- * Undocumented function
- *
  * @param string $path
  * @param integer $level
  * @return array
@@ -111,12 +97,11 @@ function glob_dir_files(string $path, int $level = 1): array {
                 $result = array_merge($result, glob_dir_files($item, $level - 1)); 
             }
         }
-        return last_dir(array_merge($result, $result_glob)) ;
+        return array_map(fn ($item) => basename($item), array_merge($result, $result_glob)) ;
     } else {
-        return last_dir($result_glob) ;
+        return array_map(fn ($item) => basename($item), $result_glob) ;
     }
 }
-
 pre_start();
 var_dump(glob_dir_files($path_dtest,3));
 pre_end();
